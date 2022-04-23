@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Inclined Plane</title>
+        <meta charset="UTF-8" >
+        <meta name="viewport" content="width=device-width , initial-scale = 1.0" >
+        <style>
+            canvas {
+                height :50%;
+                width:40%;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canva" onclick="add();"></canvas>
+    <script src="matter.js"></script>
+    <script>
+            var Engine = Matter.Engine,
+                Render = Matter.Render,
+                World = Matter.World,
+                MouseConstraint = Matter.MouseConstraint,
+                Composites = Matter.Composites,
+                Composite = Matter.Composite,
+                Constraint = Matter.Constraint,
+                Body = Matter.Body,
+                Bodies = Matter.Bodies,
+                Runner = Matter.Runner
+                Mouse = Matter.Mouse;
+
+             var engine = Engine.create();
+             var world = engine.world
+             var canvas = document.getElementById("canva");
+             var render = Render.create({
+                 canvas : canvas,
+                 engine : engine,
+             });
+             Render.run(render);
+
+             var runner = Runner.create();
+             Runner.run(runner,engine);
+
+             var ground = Bodies.rectangle(400,600,800,80,{isStatic:true,friction:1});
+
+             var obj=[];
+
+             var tangle = Math.tan(Math.PI/30);
+             var width = 500;
+             var height = width*tangle;
+             var incline = Body.create({vertices:[{x:0,y:0},{x:0,y:height},{x:width,y:height}],isStatic:true,friction:1,frictionAir:0});
+             Body.translate(incline,{x:100+(width/3),y:560-(height/3)});
+             //var centroid  = Bodies.circle(100,560,20,{isStatic:true});
+             var obj = Bodies.rectangle(120,540-height,60,40,{friction:0.9,frictionAir:0});
+             Body.rotate(obj,Math.PI/6);
+
+            
+             World.add(world,[ground,incline,obj]);
+
+            function add()
+             {
+                 var adding =new factory();
+                 obj.push(adding);
+             } 
+             function factory()
+             {
+                this.body = Bodies.rectangle(120,540-height,60,40,{friction:1,frictionAir:0});
+                Body.rotate(this.body,Math.PI/6);
+                World.add(world,this.body);
+             }
+    </script>
+</body>
+</html>

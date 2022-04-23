@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>trials</title>
+        <meta charset="UTF-8" >
+    </head>
+    <body>
+        <script src="matter.js"></script>
+        <script>
+            var Engine = Matter.Engine,
+                Render = Matter.Render,
+                World = Matter.World,
+                MouseConstraint = Matter.MouseConstraint,
+                Composites = Matter.Composites,
+                Composite = Matter.Composite,
+                Constraint = Matter.Constraint,
+                Body = Matter.Body,
+                Bodies = Matter.Bodies,
+                Runner = Matter.Runner
+                Mouse = Matter.Mouse;
+            
+            var engine = Engine.create();
+            var world = engine.world;
+            
+            
+            var render = Render.create({
+                engine : engine,
+                element : document.body,
+                options :{width:700,height : 600}
+            });
+            Render.run(render);
+            
+            var runner = Runner.create();
+            Runner.run(runner,engine);
+            
+            
+            var mouse = Mouse.create();
+            var mouseConst = MouseConstraint.create(engine,{mouse:mouse,constraint : {stiffness:0.02 , render :{visible: false}} });
+            
+            
+            var group = Body.nextGroup(true);
+            var cloth  = Composites.softBody(100,200,10,5,3,3,false,8,{ friction:0.0002 ,collisionFilter :{group:group},render: { visible: false }},{ stiffness :1.2});
+           /* for(var i=0;i<1;i++)
+            {
+                    cloth.bodies[i].isStatic = true;
+            }*/
+            cloth.bodies[0].isStatic = true;
+            cloth.bodies[9].isStatic = true;
+            cloth.bodies[40].isStatic = true;
+            cloth.bodies[49].isStatic = true;
+            
+            var bridge1 = Bodies.rectangle(150,450,20,210,{isStatic:true ,  chamfer: { radius: 20 }});
+            var bridge2 = Bodies.rectangle(550,450,20,210,{isStatic:true, chamfer: { radius: 20 }});
+            var chain=[] ;
+            var prev=null;
+            for(var i=0;i<15;i++)
+            {
+            var p = new factor(200+(i*5),360,10);
+            chain.push(p);
+            if(prev)
+            {
+            var c = Constraint.create({bodyA:p.body,bodyB :prev.body,stiffness:1.4,length:19,render:{visible:false}});
+            World.add(world,c);
+            }
+            prev = p;
+            }
+            var c = Constraint.create({bodyA:bridge1,bodyB:chain[0].body,pointA:{x:0,y:-103},stiffness:0.6,length:10});
+            var d = Constraint.create({bodyA:bridge2,bodyB:chain[14].body,pointA:{x:0,y:-103},stiffness:0.6,length:10});
+
+            var stack = Composites.stack(350,100,6,8,4,4,function(x,y){return Bodies.rectangle(x,y,22,22,10)});
+            Composites.chain(stack, 0.3, 0, -0.3, 0, { 
+            stiffness: 0.1,
+            length: 10,
+             render: {
+            visible: false}
+            });
+
+            var cradle = Composites.newtonsCradle(350,190,7,20,90);
+
+            World.add(world,[cloth,Bodies.rectangle(350,570,700,30,{ isStatic:true}),Bodies.circle(175,10,50),mouseConst,bridge1,bridge2,c,d,cradle,stack]);
+
+            function factor(x,y,r)
+            {
+                 this.x = x;
+                 this.y = y;
+                 this.r = r;
+                 this.body = Bodies.circle(x,y,r,{fillStyle: '#575375'});
+                 World.add(world,this.body);
+            }
+        </script>
+    </body>
+</html>

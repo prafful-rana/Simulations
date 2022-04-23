@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wonderland</title>
+    </head>
+    <body>
+        <script src="../p5.js""></script>
+        <script>
+            var attractor;
+            var item;
+            var attractors =[];
+            function setup()
+            {
+                createCanvas(1500,700,WEBGL);
+                item = new factory(random(-300,300),random(-150,150),random(-1500,-505));
+                for(var i = 0;i<15;i++)
+                {
+                attractors.push(new attractive(random(-300,300),random(-150,150),random(-1500,-505)));
+                }
+            }
+            function draw()
+            {
+                background(255);
+                push();
+                stroke(0,120,255);
+                strokeWeight(1);
+                line(-750,0,750,0);
+                line(0,350,0,-350);
+                pop();
+                orbitControl();
+                for(var i = 0;i<attractors.length;i++)
+                {
+                attractors[i].display();
+                item.attract(attractors[i].fixed.x,attractors[i].fixed.y,attractors[i].fixed.z);
+                }
+                item.update();
+                item.show();
+            }
+            function factory(x,y,z)
+            {
+                this.pos = createVector(x,y,z);
+                this.vel = p5.Vector.random3D();
+                this.acc = createVector();
+                this.show = function(){
+                    push();
+                    var lol = map(this.pos.x,-750,750, 0, 255);
+                    var lol1 = map(this.pos.y,-350,350, 0, 255);
+                    var lol2 = map(this.pos.z,-2000,0, 0, 255);
+                    stroke(lol,lol1,lol2);
+                    strokeWeight(25);
+                    translate(this.pos.x,this.pos.y,this.pos.z);
+                    sphere(5,20,20);
+                    pop();
+                }
+                this.update = function()
+                {
+                    this.pos.add(this.vel);
+                    this.vel.add(this.acc);
+                    this.acc.mult(0);
+                }
+                this.attract = function(a,b,c){
+                    var target = createVector(a,b,c); 
+                    var force = p5.Vector.sub(target,this.pos);
+                    var d = force.magSq();
+                    d = constrain(d, 1, 20);
+                    const G = 16.67;
+                    var strength = G/(d*d);
+                    force.setMag(strength);
+                    this.acc.add(force);
+                }
+            }
+            function attractive(x,y,z){
+                this.fixed = createVector(x,y,z);
+                this.appear = color(213,213,123);
+                this.display = function()
+                {
+                    push();
+                    noStroke();
+                    fill(this.appear);
+                    translate(this.fixed.x,this.fixed.y,this.fixed.z);
+                    sphere(20,22,22);
+                    pop();
+                }
+            }
+            function mouseClicked()
+            {
+                //attractors[0].appear = color(0);
+            }
+        </script>
+    </body>
+</html>

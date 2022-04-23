@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Patake</title>
+    <meta charset="UTF-8" />
+</head>
+
+<body>
+    <script src="./p5.js"></script>
+    <script>
+        var x = 250;
+        var y = 250;
+        var z = 250;
+        var a = 250;
+        var b = 250;
+        var c = 250;
+        var d = 250;
+        var f = 250;
+        var obj;
+
+        function setup() {
+            createCanvas(500, 500);
+            obj = new Bomb();
+        }
+
+        function draw() {
+            background(120);
+            fill(12, 122, 154);
+            if (height - millis() / 5 < 200) {
+                patake();
+            } else {
+                ellipse(250, height - millis() / 5, 20);
+            }
+        }
+
+        function patake() {
+            obj.lowLeft();
+            obj.subleft();
+            obj.medLeft();
+            obj.topleft();
+            obj.lowright();
+            obj.subright();
+            obj.medright();
+            obj.topright();
+        }
+        class Bomb {
+            lowLeft() {
+                ellipse(x, (x - 250) * (x - 250) / 150 + 200, 15);
+                x -= 2;
+            }
+            subleft() {
+                ellipse(z, ((z - 179.3) * (z - 179.3) / 100) + 150, 15);
+                z -= 2;
+            }
+            medLeft() {
+                ellipse(y, ((y - 150) * (y - 150) / 100) + 100, 15);
+                y -= 2;
+            }
+            topleft() {
+                ellipse(a, ((a - 120) * (a - 120) / 100) + 31, 15);
+                a -= 2;
+            }
+            lowright() {
+                ellipse(b, ((b - 250) * (b - 250) / 150 + 200), 15);
+                b += 2;
+            }
+            subright() {
+                ellipse(f, ((f - 320.21) * (f - 320.21) / 100) + 150, 15);
+                f += 2;
+            }
+            medright() {
+                ellipse(c, ((c - 350) * (c - 350) / 100) + 100, 15);
+                c += 2;
+            }
+            topright() {
+                ellipse(d, ((d - 380) * (d - 380) / 100) + 31, 15);
+                d += 2;
+            }
+        }
+    </script>
+</body>
+
+</html>
